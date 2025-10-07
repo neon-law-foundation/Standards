@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:Standards}",
+      "name": "Debug Standards",
+      "program": "${workspaceFolder:Standards}/.build/debug/Standards",
+      "preLaunchTask": "swift: Build Debug Standards"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:Standards}",
+      "name": "Release Standards",
+      "program": "${workspaceFolder:Standards}/.build/release/Standards",
+      "preLaunchTask": "swift: Build Release Standards"
+    }
+  ]
+}
