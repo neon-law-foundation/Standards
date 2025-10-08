@@ -50,6 +50,24 @@ do {
             print("")
         }
 
+        print("""
+
+        📝 Fix Instructions:
+        All lines in Markdown files must be ≤120 characters. To fix these violations:
+
+        1. Break long lines at natural boundaries (spaces, punctuation)
+        2. Keep each line as close to 120 characters as possible without exceeding it
+        3. Maintain readability and proper Markdown formatting
+        4. For long URLs or code, consider using reference-style links
+
+        Example fix for a 150-character line:
+        Before: "This is an extremely long line that contains too many characters and needs to be broken up into multiple lines for better readability."
+        After:  "This is an extremely long line that contains too many characters and needs to be broken up into multiple
+        lines for better readability."
+
+        Run 'standards .' again after fixing to verify all lines are within the limit.
+        """)
+
         exit(1)
     }
 } catch {
