@@ -52,19 +52,10 @@ struct CommandTests {
         }
     }
 
-    @Test("Setup command copies CLAUDE.md from ~/standards")
+    @Test("Setup command copies CLAUDE.md template")
     func setupCommandCopiesCLAUDEmd() throws {
         let testDir = try createTestDirectory()
         defer { cleanupTestDirectory(testDir) }
-
-        // Check if ~/standards/CLAUDE.md exists
-        let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-        let templateURL = homeDirectory.appendingPathComponent("standards/CLAUDE.md")
-
-        guard FileManager.default.fileExists(atPath: templateURL.path) else {
-            // Skip test if template doesn't exist
-            return
-        }
 
         let command = SetupCommand(targetDirectory: testDir.path)
         try command.run()
@@ -73,9 +64,9 @@ struct CommandTests {
         #expect(FileManager.default.fileExists(atPath: destinationURL.path))
 
         // Verify content was copied
-        let originalContent = try String(contentsOf: templateURL, encoding: .utf8)
         let copiedContent = try String(contentsOf: destinationURL, encoding: .utf8)
-        #expect(originalContent == copiedContent)
+        #expect(copiedContent.contains("# Luxe Project"))
+        #expect(copiedContent.contains("Swift Everywhere"))
     }
 
     @Test("Setup command fails with non-existent directory")
@@ -92,16 +83,27 @@ struct CommandTests {
         let testDir = try createTestDirectory()
         defer { cleanupTestDirectory(testDir) }
 
-        // Temporarily rename ~/standards if it exists to test failure case
+        // Temporarily rename CLAUDE.md and ~/standards to test failure case
+        let claudeMdURL = URL(fileURLWithPath: "/Users/nick/Code/NLF/Standards/CLAUDE.md")
+        let tempClaudeMdURL = URL(fileURLWithPath: "/Users/nick/Code/NLF/Standards/CLAUDE.md.tmp-\(UUID().uuidString)")
+
         let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
         let standardsURL = homeDirectory.appendingPathComponent("standards")
         let tempStandardsURL = homeDirectory.appendingPathComponent("standards-temp-\(UUID().uuidString)")
 
+        let claudeMdExists = FileManager.default.fileExists(atPath: claudeMdURL.path)
         let standardsExists = FileManager.default.fileExists(atPath: standardsURL.path)
+
+        if claudeMdExists {
+            try FileManager.default.moveItem(at: claudeMdURL, to: tempClaudeMdURL)
+        }
         if standardsExists {
             try FileManager.default.moveItem(at: standardsURL, to: tempStandardsURL)
         }
         defer {
+            if claudeMdExists {
+                try? FileManager.default.moveItem(at: tempClaudeMdURL, to: claudeMdURL)
+            }
             if standardsExists {
                 try? FileManager.default.moveItem(at: tempStandardsURL, to: standardsURL)
             }

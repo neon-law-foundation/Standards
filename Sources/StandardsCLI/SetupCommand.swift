@@ -19,13 +19,16 @@ struct SetupCommand: Command {
             throw CommandError.invalidDirectory(targetDirectory)
         }
 
-        // Find CLAUDE.md template in ~/standards
-        let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-        let templateURL = homeDirectory.appendingPathComponent("standards/CLAUDE.md")
+        // Find CLAUDE.md template - look in common locations
+        let possiblePaths = [
+            "/Users/nick/Code/NLF/Standards/CLAUDE.md",
+            FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("standards/CLAUDE.md").path,
+        ]
 
-        guard FileManager.default.fileExists(atPath: templateURL.path) else {
-            throw CommandError.setupFailed("Template file not found at ~/standards/CLAUDE.md")
+        guard let foundPath = possiblePaths.first(where: { FileManager.default.fileExists(atPath: $0) }) else {
+            throw CommandError.setupFailed("Template file not found. Looked in: \(possiblePaths.joined(separator: ", "))")
         }
+        let templateURL = URL(fileURLWithPath: foundPath)
 
         // Destination path
         let destinationURL = targetURL.appendingPathComponent("CLAUDE.md")
