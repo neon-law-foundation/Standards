@@ -3,7 +3,7 @@ import Foundation
 struct LintCommand: Command {
     let directoryPath: String
 
-    func run() throws {
+    func run() async throws {
         // Resolve path to URL
         let url: URL
         if directoryPath == "." {

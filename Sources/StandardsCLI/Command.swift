@@ -1,5 +1,5 @@
 import Foundation
 
 protocol Command {
-    func run() throws
+    func run() async throws
 }
