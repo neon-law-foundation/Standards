@@ -29,12 +29,22 @@ let package = Package(
                 "README.md"
             ]
         ),
+        .executableTarget(
+            name: "StandardsCLI",
+            dependencies: []
+        ),
         .testTarget(
             name: "StandardsDALTests",
             dependencies: [
                 "StandardsDAL",
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+            ]
+        ),
+        .testTarget(
+            name: "StandardsCLITests",
+            dependencies: [
+                "StandardsCLI"
             ]
         )
     ]
