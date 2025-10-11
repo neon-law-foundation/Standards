@@ -27,6 +27,9 @@ let package = Package(
             ],
             exclude: [
                 "README.md"
+            ],
+            resources: [
+                .copy("Examples")
             ]
         ),
         .executableTarget(
