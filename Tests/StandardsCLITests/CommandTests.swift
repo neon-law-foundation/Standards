@@ -23,7 +23,7 @@ struct CommandTests {
         let fileURL = testDir.appendingPathComponent("test.md")
         try "# Short content".write(to: fileURL, atomically: true, encoding: .utf8)
 
-        let command = LintCommand(directoryPath: testDir.path)
+        let command = LintCommand(directoryPath: testDir.path, fix: false)
         try await command.run()
     }
 
@@ -36,7 +36,7 @@ struct CommandTests {
         let longLine = String(repeating: "a", count: 150)
         try longLine.write(to: fileURL, atomically: true, encoding: .utf8)
 
-        let command = LintCommand(directoryPath: testDir.path)
+        let command = LintCommand(directoryPath: testDir.path, fix: false)
 
         await #expect(throws: CommandError.self) {
             try await command.run()
@@ -45,7 +45,7 @@ struct CommandTests {
 
     @Test("Lint command fails with non-existent directory")
     func lintCommandFailsWithNonExistentDirectory() async throws {
-        let command = LintCommand(directoryPath: "/non/existent/path")
+        let command = LintCommand(directoryPath: "/non/existent/path", fix: false)
 
         await #expect(throws: CommandError.self) {
             try await command.run()

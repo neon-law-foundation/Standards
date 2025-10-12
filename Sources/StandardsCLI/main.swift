@@ -7,13 +7,15 @@ func printUsage() {
     Usage: standards <command> [arguments]
 
     Commands:
-      lint <directory>    Validate Markdown files have lines ≤120 characters
-      voice <directory>   Check Markdown files for active voice and tone compliance
-      setup               Create ~/Standards structure and fetch projects
-      sync                Sync all projects (git pull existing repos)
+      lint <directory> [--fix]    Validate Markdown files have lines ≤120 characters
+                                  Use --fix to automatically correct violations
+      voice <directory>           Check Markdown files for active voice and tone compliance
+      setup                       Create ~/Standards structure and fetch projects
+      sync                        Sync all projects (git pull existing repos)
 
     Examples:
       standards lint .
+      standards lint . --fix
       standards voice ShookFamily/Estate
       standards setup
       standards sync
@@ -32,8 +34,20 @@ Task {
 
         switch commandName {
         case "lint":
-            let directoryPath = arguments.count > 2 ? arguments[2] : "."
-            command = LintCommand(directoryPath: directoryPath)
+            var directoryPath = "."
+            var fix = false
+
+            // Parse arguments for lint command
+            for i in 2..<arguments.count {
+                let arg = arguments[i]
+                if arg == "--fix" {
+                    fix = true
+                } else if !arg.starts(with: "-") {
+                    directoryPath = arg
+                }
+            }
+
+            command = LintCommand(directoryPath: directoryPath, fix: fix)
 
         case "voice":
             let directoryPath = arguments.count > 2 ? arguments[2] : "."
