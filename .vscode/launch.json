@@ -17,6 +17,24 @@
       "name": "Release Standards",
       "program": "${workspaceFolder:Standards}/.build/release/Standards",
       "preLaunchTask": "swift: Build Release Standards"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:Standards}",
+      "name": "Debug StandardsCLI",
+      "program": "${workspaceFolder:Standards}/.build/debug/StandardsCLI",
+      "preLaunchTask": "swift: Build Debug StandardsCLI"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:Standards}",
+      "name": "Release StandardsCLI",
+      "program": "${workspaceFolder:Standards}/.build/release/StandardsCLI",
+      "preLaunchTask": "swift: Build Release StandardsCLI"
     }
   ]
 }
