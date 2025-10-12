@@ -9,7 +9,7 @@ struct SyncCommand: Command {
             self.standardsDirectory = dir
         } else {
             let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-            self.standardsDirectory = homeDirectory.appendingPathComponent("standards").path
+            self.standardsDirectory = homeDirectory.appendingPathComponent("Standards").path
         }
         self.apiClient = apiClient
     }
@@ -17,11 +17,11 @@ struct SyncCommand: Command {
     func run() async throws {
         let standardsURL = URL(fileURLWithPath: standardsDirectory)
 
-        // Ensure ~/standards directory exists
+        // Ensure ~/Standards directory exists
         var isDirectory: ObjCBool = false
         guard FileManager.default.fileExists(atPath: standardsURL.path, isDirectory: &isDirectory),
               isDirectory.boolValue else {
-            throw CommandError.setupFailed("~/standards directory does not exist. Run 'standards setup' first.")
+            throw CommandError.setupFailed("~/Standards directory does not exist. Run 'standards setup' first.")
         }
 
         // Fetch projects from API
@@ -39,7 +39,7 @@ struct SyncCommand: Command {
             } else {
                 // Create new project directory
                 try FileManager.default.createDirectory(at: projectURL, withIntermediateDirectories: true)
-                print("✓ Created ~/standards/\(project.name)")
+                print("✓ Created ~/Standards/\(project.name)")
             }
         }
 
@@ -50,7 +50,7 @@ struct SyncCommand: Command {
         // Check if directory is a git repository
         let gitDir = directory.appendingPathComponent(".git")
         guard FileManager.default.fileExists(atPath: gitDir.path) else {
-            print("⚠️  ~/standards/\(projectName) is not a git repository")
+            print("⚠️  ~/Standards/\(projectName) is not a git repository")
             return
         }
 
@@ -69,7 +69,7 @@ struct SyncCommand: Command {
         process.waitUntilExit()
 
         if process.terminationStatus == 0 {
-            print("✓ Updated ~/standards/\(projectName)")
+            print("✓ Updated ~/Standards/\(projectName)")
         } else {
             let data = pipe.fileHandleForReading.readDataToEndOfFile()
             let output = String(data: data, encoding: .utf8) ?? ""

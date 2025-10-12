@@ -73,6 +73,7 @@ enum CommandError: Error, LocalizedError {
     case unknownCommand(String)
     case missingArgument(String)
     case setupFailed(String)
+    case voiceCheckFailed(String)
 
     var errorDescription: String? {
         switch self {
@@ -86,6 +87,8 @@ enum CommandError: Error, LocalizedError {
             return "Missing argument: \(arg)"
         case .setupFailed(let reason):
             return "Setup failed: \(reason)"
+        case .voiceCheckFailed(let file):
+            return "Voice check failed for file: \(file)"
         }
     }
 }

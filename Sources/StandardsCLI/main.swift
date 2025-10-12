@@ -8,11 +8,13 @@ func printUsage() {
 
     Commands:
       lint <directory>    Validate Markdown files have lines ≤120 characters
-      setup               Create ~/standards structure and fetch projects
+      voice <directory>   Check Markdown files for active voice and tone compliance
+      setup               Create ~/Standards structure and fetch projects
       sync                Sync all projects (git pull existing repos)
 
     Examples:
       standards lint .
+      standards voice ShookFamily/Estate
       standards setup
       standards sync
     """)
@@ -32,6 +34,10 @@ Task {
         case "lint":
             let directoryPath = arguments.count > 2 ? arguments[2] : "."
             command = LintCommand(directoryPath: directoryPath)
+
+        case "voice":
+            let directoryPath = arguments.count > 2 ? arguments[2] : "."
+            command = VoiceCommand(directoryPath: directoryPath)
 
         case "setup":
             command = SetupCommand()

@@ -9,13 +9,13 @@ struct SetupCommand: Command {
 
     func run() async throws {
         let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-        let standardsURL = homeDirectory.appendingPathComponent("standards")
+        let standardsURL = homeDirectory.appendingPathComponent("Standards")
 
-        // 1. Find or create ~/standards
+        // 1. Find or create ~/Standards
         try createDirectoryIfNeeded(at: standardsURL)
-        print("✓ ~/standards directory ready")
+        print("✓ ~/Standards directory ready")
 
-        // 2. Find or create ~/standards/CLAUDE.md
+        // 2. Find or create ~/Standards/CLAUDE.md
         try await setupCLAUDETemplate(in: standardsURL)
 
         // 3. Fetch projects from API
@@ -27,7 +27,7 @@ struct SetupCommand: Command {
         for project in projects {
             let projectURL = standardsURL.appendingPathComponent(project.name)
             try createDirectoryIfNeeded(at: projectURL)
-            print("✓ Created ~/standards/\(project.name)")
+            print("✓ Created ~/Standards/\(project.name)")
         }
 
         print("\n✓ Setup complete!")
@@ -55,7 +55,7 @@ struct SetupCommand: Command {
 
         // Check if CLAUDE.md already exists
         if FileManager.default.fileExists(atPath: claudeURL.path) {
-            print("✓ ~/standards/CLAUDE.md already exists")
+            print("✓ ~/Standards/CLAUDE.md already exists")
             return
         }
 
@@ -72,7 +72,7 @@ struct SetupCommand: Command {
         // Copy template
         do {
             try FileManager.default.copyItem(at: templateURL, to: claudeURL)
-            print("✓ Created ~/standards/CLAUDE.md")
+            print("✓ Created ~/Standards/CLAUDE.md")
         } catch {
             throw CommandError.setupFailed("Failed to copy CLAUDE.md: \(error.localizedDescription)")
         }

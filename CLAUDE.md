@@ -15,6 +15,10 @@ provided by the CLI to fix line length issues. Every line must be ≤120 charact
 
 - Write in clear, precise legal language
 - Use active voice when possible
+- Avoid pronouns (he, she, they, him, her, etc.) - reference people by their role instead
+  - Examples: "executor", "stockholder", "secretary", "trustee", "beneficiary", "grantor"
+  - Instead of "he will execute the deed", write "the grantor will execute the deed"
+  - Instead of "they must vote", write "stockholders must vote"
 - Define terms before using them
 - Structure documents logically with proper headings
 - Cite sources and references appropriately
