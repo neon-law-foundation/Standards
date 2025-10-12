@@ -42,7 +42,7 @@ struct VoiceCommand: Command {
         print("\n✓ Voice analysis complete")
     }
 
-    private func findMarkdownFiles(in directory: URL) throws -> [URL] {
+    func findMarkdownFiles(in directory: URL) throws -> [URL] {
         let fileManager = FileManager.default
         guard let enumerator = fileManager.enumerator(
             at: directory,
@@ -56,6 +56,7 @@ struct VoiceCommand: Command {
 
         for case let fileURL as URL in enumerator {
             guard fileURL.pathExtension == "md" else { continue }
+            guard fileURL.lastPathComponent != "README.md" else { continue }
 
             let resourceValues = try fileURL.resourceValues(forKeys: [.isRegularFileKey])
             if resourceValues.isRegularFile == true {
