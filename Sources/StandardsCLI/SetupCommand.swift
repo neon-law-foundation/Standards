@@ -2,13 +2,20 @@ import Foundation
 
 struct SetupCommand: Command {
     let apiClient: SagebrushAPIClientProtocol
+    let homeDirectory: URL
+    let templateDirectory: URL
 
-    init(apiClient: SagebrushAPIClientProtocol = SagebrushAPIClient()) {
+    init(
+        apiClient: SagebrushAPIClientProtocol = SagebrushAPIClient(),
+        homeDirectory: URL? = nil,
+        templateDirectory: URL? = nil
+    ) {
         self.apiClient = apiClient
+        self.homeDirectory = homeDirectory ?? FileManager.default.homeDirectoryForCurrentUser
+        self.templateDirectory = templateDirectory ?? URL(fileURLWithPath: "/Users/nick/Code/NLF/Standards/ClaudeTemplates")
     }
 
     func run() async throws {
-        let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
         let standardsURL = homeDirectory.appendingPathComponent("Standards")
 
         // 1. Find or create ~/Standards
@@ -18,12 +25,15 @@ struct SetupCommand: Command {
         // 2. Find or create ~/Standards/CLAUDE.md
         try await setupCLAUDETemplate(in: standardsURL)
 
-        // 3. Fetch projects from API
+        // 3. Set up Claude agents
+        try await setupClaudeAgents(in: standardsURL)
+
+        // 4. Fetch projects from API
         print("Fetching projects from Sagebrush API...")
         let projects = try await apiClient.fetchProjects()
         print("✓ Found \(projects.count) projects")
 
-        // 4. Create project directories
+        // 5. Create project directories
         for project in projects {
             let projectURL = standardsURL.appendingPathComponent(project.name)
             try createDirectoryIfNeeded(at: projectURL)
@@ -60,14 +70,11 @@ struct SetupCommand: Command {
         }
 
         // Find source template
-        let possiblePaths = [
-            "/Users/nick/Code/NLF/Standards/CLAUDE.md",
-        ]
+        let templateURL = templateDirectory.appendingPathComponent("CLAUDE.md")
 
-        guard let foundPath = possiblePaths.first(where: { FileManager.default.fileExists(atPath: $0) }) else {
-            throw CommandError.setupFailed("CLAUDE.md template not found. Looked in: \(possiblePaths.joined(separator: ", "))")
+        guard FileManager.default.fileExists(atPath: templateURL.path) else {
+            throw CommandError.setupFailed("CLAUDE.md template not found at: \(templateURL.path)")
         }
-        let templateURL = URL(fileURLWithPath: foundPath)
 
         // Copy template
         do {
@@ -75,6 +82,40 @@ struct SetupCommand: Command {
             print("✓ Created ~/Standards/CLAUDE.md")
         } catch {
             throw CommandError.setupFailed("Failed to copy CLAUDE.md: \(error.localizedDescription)")
+        }
+    }
+
+    private func setupClaudeAgents(in standardsURL: URL) async throws {
+        // Create ~/Standards/.claude/agents directory
+        let claudeAgentsURL = standardsURL
+            .appendingPathComponent(".claude")
+            .appendingPathComponent("agents")
+        try createDirectoryIfNeeded(at: claudeAgentsURL)
+
+        // Set up markdown-formatter agent
+        let markdownFormatterDestURL = claudeAgentsURL.appendingPathComponent("markdown-formatter.md")
+
+        // Check if agent already exists
+        if FileManager.default.fileExists(atPath: markdownFormatterDestURL.path) {
+            print("✓ ~/Standards/.claude/agents/markdown-formatter.md already exists")
+            return
+        }
+
+        // Find source agent
+        let agentTemplateURL = templateDirectory
+            .appendingPathComponent("agents")
+            .appendingPathComponent("markdown-formatter.md")
+
+        guard FileManager.default.fileExists(atPath: agentTemplateURL.path) else {
+            throw CommandError.setupFailed("markdown-formatter.md agent not found at: \(agentTemplateURL.path)")
+        }
+
+        // Copy agent
+        do {
+            try FileManager.default.copyItem(at: agentTemplateURL, to: markdownFormatterDestURL)
+            print("✓ Created ~/Standards/.claude/agents/markdown-formatter.md")
+        } catch {
+            throw CommandError.setupFailed("Failed to copy markdown-formatter.md: \(error.localizedDescription)")
         }
     }
 }

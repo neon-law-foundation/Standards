@@ -27,6 +27,7 @@ provided by the CLI to fix line length issues. Every line must be ≤120 charact
 
 - **Ask when unsure** - Never assume legal interpretations or requirements
 - **Small changes** - Each edit should be reviewable and focused
+- **Version control** - Commit frequently with clear, descriptive messages
 - **Clean formatting** - Remove all trailing whitespace
 - **Markdown compliance** - All files must pass `standards lint .`
 
