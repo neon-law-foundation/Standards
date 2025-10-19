@@ -12,6 +12,8 @@ func printUsage() {
       voice <directory>           Check Markdown files for active voice and tone compliance
       setup                       Create ~/Standards structure and fetch projects
       sync                        Sync all projects (git pull existing repos)
+      zip [directory]             Convert Markdown files to .docx, zip them, and open Mail.app
+                                  Excludes README.md files
 
     Examples:
       standards lint .
@@ -19,6 +21,8 @@ func printUsage() {
       standards voice ShookFamily/Estate
       standards setup
       standards sync
+      standards zip
+      standards zip SagebrushHoldingCompany
     """)
 }
 
@@ -58,6 +62,10 @@ Task {
 
         case "sync":
             command = SyncCommand()
+
+        case "zip":
+            let directoryPath = arguments.count > 2 ? arguments[2] : "."
+            command = ZipCommand(directoryPath: directoryPath)
 
         case "--help", "-h":
             printUsage()
