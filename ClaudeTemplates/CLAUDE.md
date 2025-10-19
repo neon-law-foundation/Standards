@@ -31,6 +31,24 @@ provided by the CLI to fix line length issues. Every line must be ≤120 charact
 - **Clean formatting** - Remove all trailing whitespace
 - **Markdown compliance** - All files must pass `standards lint .`
 
+## Version Control
+
+### Conventional Commits
+
+**CRITICAL**: All commits must follow conventional commit standards. Use the committer agent to ensure proper
+formatting:
+
+- **Agent**: See `ClaudeTemplates/agents/commiter.md` for the committer agent specification
+- **Format**: `<type>[optional scope]: <description>`
+- **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`
+- **Branch Protection**: Never commit directly to main - always use feature branches
+
+Before creating any commit, the committer agent will:
+1. Verify you are not on the main branch
+2. Format all code with appropriate formatters
+3. Ensure conventional commit message format
+4. Validate commit message follows standards
+
 ## What You Must NEVER Do
 
 1. **Never** commit files that fail `standards lint .`

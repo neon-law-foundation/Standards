@@ -28,12 +28,15 @@ struct SetupCommand: Command {
         // 3. Set up Claude agents
         try await setupClaudeAgents(in: standardsURL)
 
-        // 4. Fetch projects from API
+        // 4. Set up Claude commands
+        try await setupClaudeCommands(in: standardsURL)
+
+        // 5. Fetch projects from API
         print("Fetching projects from Sagebrush API...")
         let projects = try await apiClient.fetchProjects()
         print("✓ Found \(projects.count) projects")
 
-        // 5. Create project directories
+        // 6. Create project directories
         for project in projects {
             let projectURL = standardsURL.appendingPathComponent(project.name)
             try createDirectoryIfNeeded(at: projectURL)
@@ -116,6 +119,40 @@ struct SetupCommand: Command {
             print("✓ Created ~/Standards/.claude/agents/markdown-formatter.md")
         } catch {
             throw CommandError.setupFailed("Failed to copy markdown-formatter.md: \(error.localizedDescription)")
+        }
+    }
+
+    private func setupClaudeCommands(in standardsURL: URL) async throws {
+        // Create ~/Standards/.claude/commands directory
+        let claudeCommandsURL = standardsURL
+            .appendingPathComponent(".claude")
+            .appendingPathComponent("commands")
+        try createDirectoryIfNeeded(at: claudeCommandsURL)
+
+        // Set up format-markdown command
+        let formatMarkdownDestURL = claudeCommandsURL.appendingPathComponent("format-markdown.md")
+
+        // Check if command already exists
+        if FileManager.default.fileExists(atPath: formatMarkdownDestURL.path) {
+            print("✓ ~/Standards/.claude/commands/format-markdown.md already exists")
+            return
+        }
+
+        // Find source command
+        let commandTemplateURL = templateDirectory
+            .appendingPathComponent("commands")
+            .appendingPathComponent("format-markdown.md")
+
+        guard FileManager.default.fileExists(atPath: commandTemplateURL.path) else {
+            throw CommandError.setupFailed("format-markdown.md command not found at: \(commandTemplateURL.path)")
+        }
+
+        // Copy command
+        do {
+            try FileManager.default.copyItem(at: commandTemplateURL, to: formatMarkdownDestURL)
+            print("✓ Created ~/Standards/.claude/commands/format-markdown.md")
+        } catch {
+            throw CommandError.setupFailed("Failed to copy format-markdown.md: \(error.localizedDescription)")
         }
     }
 }
