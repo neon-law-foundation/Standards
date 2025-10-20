@@ -8,40 +8,40 @@ import Vapor
 /// organizations) or people. Each address must be tied to exactly one entity OR one person,
 /// but not both and not neither (XOR constraint).
 public final class Address: Model, @unchecked Sendable {
-    public static let schema = "addresses"
+  public static let schema = "addresses"
 
-    @ID(custom: .id, generatedBy: .database)
-    public var id: Int32?
+  @ID(custom: .id, generatedBy: .database)
+  public var id: Int32?
 
-    @OptionalParent(key: "entity_id")
-    public var entity: Entity?
+  @OptionalParent(key: "entity_id")
+  public var entity: Entity?
 
-    @OptionalParent(key: "person_id")
-    public var person: Person?
+  @OptionalParent(key: "person_id")
+  public var person: Person?
 
-    @Field(key: "street")
-    public var street: String
+  @Field(key: "street")
+  public var street: String
 
-    @Field(key: "city")
-    public var city: String
+  @Field(key: "city")
+  public var city: String
 
-    @Field(key: "state")
-    public var state: String?
+  @Field(key: "state")
+  public var state: String?
 
-    @Field(key: "zip")
-    public var zip: String?
+  @Field(key: "zip")
+  public var zip: String?
 
-    @Field(key: "country")
-    public var country: String
+  @Field(key: "country")
+  public var country: String
 
-    @Field(key: "is_verified")
-    public var isVerified: Bool
+  @Field(key: "is_verified")
+  public var isVerified: Bool
 
-    @Timestamp(key: "inserted_at", on: .create)
-    public var insertedAt: Date?
+  @Timestamp(key: "inserted_at", on: .create)
+  public var insertedAt: Date?
 
-    @Timestamp(key: "updated_at", on: .update)
-    public var updatedAt: Date?
+  @Timestamp(key: "updated_at", on: .update)
+  public var updatedAt: Date?
 
-    public init() {}
+  public init() {}
 }

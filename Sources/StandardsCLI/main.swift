@@ -3,7 +3,8 @@ import Foundation
 let arguments = CommandLine.arguments
 
 func printUsage() {
-    print("""
+  print(
+    """
     Usage: standards <command> [arguments]
 
     Commands:
@@ -27,68 +28,68 @@ func printUsage() {
 }
 
 Task {
-    do {
-        guard arguments.count > 1 else {
-            printUsage()
-            exit(1)
-        }
-
-        let commandName = arguments[1]
-        let command: Command
-
-        switch commandName {
-        case "lint":
-            var directoryPath = "."
-            var fix = false
-
-            // Parse arguments for lint command
-            for i in 2..<arguments.count {
-                let arg = arguments[i]
-                if arg == "--fix" {
-                    fix = true
-                } else if !arg.starts(with: "-") {
-                    directoryPath = arg
-                }
-            }
-
-            command = LintCommand(directoryPath: directoryPath, fix: fix)
-
-        case "voice":
-            let directoryPath = arguments.count > 2 ? arguments[2] : "."
-            command = VoiceCommand(directoryPath: directoryPath)
-
-        case "setup":
-            command = SetupCommand()
-
-        case "sync":
-            command = SyncCommand()
-
-        case "zip":
-            let directoryPath = arguments.count > 2 ? arguments[2] : "."
-            command = ZipCommand(directoryPath: directoryPath)
-
-        case "--help", "-h":
-            printUsage()
-            exit(0)
-
-        default:
-            throw CommandError.unknownCommand(commandName)
-        }
-
-        try await command.run()
-        exit(0)
-    } catch let error as CommandError {
-        switch error {
-        case .lintFailed:
-            exit(1)
-        default:
-            print("Error: \(error.localizedDescription)")
-            exit(1)
-        }
-    } catch {
-        print("Error: \(error.localizedDescription)")
-        exit(1)
+  do {
+    guard arguments.count > 1 else {
+      printUsage()
+      exit(1)
     }
+
+    let commandName = arguments[1]
+    let command: Command
+
+    switch commandName {
+    case "lint":
+      var directoryPath = "."
+      var fix = false
+
+      // Parse arguments for lint command
+      for i in 2..<arguments.count {
+        let arg = arguments[i]
+        if arg == "--fix" {
+          fix = true
+        } else if !arg.starts(with: "-") {
+          directoryPath = arg
+        }
+      }
+
+      command = LintCommand(directoryPath: directoryPath, fix: fix)
+
+    case "voice":
+      let directoryPath = arguments.count > 2 ? arguments[2] : "."
+      command = VoiceCommand(directoryPath: directoryPath)
+
+    case "setup":
+      command = SetupCommand()
+
+    case "sync":
+      command = SyncCommand()
+
+    case "zip":
+      let directoryPath = arguments.count > 2 ? arguments[2] : "."
+      command = ZipCommand(directoryPath: directoryPath)
+
+    case "--help", "-h":
+      printUsage()
+      exit(0)
+
+    default:
+      throw CommandError.unknownCommand(commandName)
+    }
+
+    try await command.run()
+    exit(0)
+  } catch let error as CommandError {
+    switch error {
+    case .lintFailed:
+      exit(1)
+    default:
+      print("Error: \(error.localizedDescription)")
+      exit(1)
+    }
+  } catch {
+    print("Error: \(error.localizedDescription)")
+    exit(1)
+  }
 }
 
 dispatchMain()

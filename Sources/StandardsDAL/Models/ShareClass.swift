@@ -9,28 +9,28 @@ import Vapor
 /// compound index on entity_id and priority ensures no two share classes can have
 /// the same priority within the same entity.
 public final class ShareClass: Model, @unchecked Sendable {
-    public static let schema = "share_classes"
+  public static let schema = "share_classes"
 
-    @ID(custom: .id, generatedBy: .database)
-    public var id: Int32?
+  @ID(custom: .id, generatedBy: .database)
+  public var id: Int32?
 
-    @Field(key: "name")
-    public var name: String
+  @Field(key: "name")
+  public var name: String
 
-    @Parent(key: "entity_id")
-    public var entity: Entity
+  @Parent(key: "entity_id")
+  public var entity: Entity
 
-    @Field(key: "priority")
-    public var priority: Int
+  @Field(key: "priority")
+  public var priority: Int
 
-    @OptionalField(key: "description")
-    public var description: String?
+  @OptionalField(key: "description")
+  public var description: String?
 
-    @Timestamp(key: "inserted_at", on: .create)
-    public var insertedAt: Date?
+  @Timestamp(key: "inserted_at", on: .create)
+  public var insertedAt: Date?
 
-    @Timestamp(key: "updated_at", on: .update)
-    public var updatedAt: Date?
+  @Timestamp(key: "updated_at", on: .update)
+  public var updatedAt: Date?
 
-    public init() {}
+  public init() {}
 }
